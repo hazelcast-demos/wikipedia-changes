@@ -25,3 +25,13 @@ services:
       - "5601:5601"
     depends_on:
       - elasticsearch
+  hazelcast:
+    image: hazelcast/hazelcast:5.0-slim
+    environment:
+      - HZ_JET_RESOURCE-UPLOAD-ENABLED=true
+      - HZ_JET_ENABLED=true
+      - ELASTICSEARCH_HOST=elasticsearch
+    ports:
+      - "5701:5701"
+    depends_on:
+      - elasticsearch
