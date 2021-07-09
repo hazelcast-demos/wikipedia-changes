@@ -7,6 +7,7 @@ fun main() {
     val pipeline = Pipeline.create().apply {
         readFrom(wikipedia)
             .withTimestamps({ it.getLong("timestamp") }, 100)
+            .peek()
             .writeTo(elasticsearch)
     }
     Hazelcast.bootstrappedInstance().jet.newJob(pipeline)
