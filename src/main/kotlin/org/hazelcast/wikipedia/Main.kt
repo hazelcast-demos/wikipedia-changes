@@ -12,6 +12,7 @@ fun main() {
         readFrom(wikipedia)
             .withTimestamps({ it.getLong("timestamp") }, 100)
             .apply(RemoveFieldIfArray("log_params"))
+            .apply(enrichWithLocation)
             .peek()
             .writeTo(elasticsearch)
     }
