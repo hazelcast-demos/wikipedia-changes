@@ -15,6 +15,9 @@ fun main() {
             .mapUsingService(
                 ServiceFactories.sharedService(databaseReaderSupplier),
                 enrichWithLocation
+            ).mapUsingService(
+                ServiceFactories.sharedService(languageDetectorSupplier),
+                enrichWithLanguage
             ).peek()
             .writeTo(elasticsearch)
     }
