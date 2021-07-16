@@ -13,6 +13,7 @@ fun main() {
             .withTimestamps({ it.getLong("timestamp") }, 100)
             .apply(MakeFieldObjectIfArray("log_params"))
             .apply(enrichWithLocation)
+            .apply(enrichWithLanguage)
             .peek()
             .writeTo(elasticsearch)
     }
