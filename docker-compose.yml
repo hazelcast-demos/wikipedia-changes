@@ -26,7 +26,7 @@ services:
     depends_on:
       - elasticsearch
   hazelcast:
-    image: hazelcast/hazelcast:5.0-SNAPSHOT-slim
+    image: hazelcast/hazelcast:5.0-BETA-1-slim
     environment:
       - HZ_JET_RESOURCE-UPLOAD-ENABLED=true
       - HZ_JET_ENABLED=true
