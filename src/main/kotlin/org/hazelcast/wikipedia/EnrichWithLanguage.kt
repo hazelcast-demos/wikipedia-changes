@@ -1,6 +1,7 @@
 package org.hazelcast.wikipedia
 
-import com.github.pemistahl.lingua.api.*
+import com.github.pemistahl.lingua.api.LanguageDetector
+import com.github.pemistahl.lingua.api.LanguageDetectorBuilder
 import com.hazelcast.jet.core.ProcessorSupplier
 import com.hazelcast.jet.pipeline.ServiceFactories
 import com.hazelcast.jet.pipeline.StreamStage
@@ -18,13 +19,16 @@ val enrichWithLanguage = { stage: StreamStage<JSONObject> ->
             json.apply {
                 val comment = json.optString("comment")
                 if (comment.isNotEmpty()) {
-                    val language = detector.detectLanguageOf(comment)
-                    if (language != Language.UNKNOWN) {
+                    val languagesWithConfidence = detector.computeLanguageConfidenceValues(comment)
+                    if (languagesWithConfidence.isNotEmpty()) {
+                        val mostLikelyLanguage = languagesWithConfidence.firstKey()
+                        val secondMostLikelyConfidence = languagesWithConfidence.filterNot { it.key == mostLikelyLanguage }.maxBy { it.value }?.value ?: 0.0
                         json.put(
                             "language", JSONObject()
-                                .put("code2", language.isoCode639_1)
-                                .put("code3", language.isoCode639_3)
-                                .put("name", language.name)
+                                .put("code2", mostLikelyLanguage.isoCode639_1)
+                                .put("code3", mostLikelyLanguage.isoCode639_3)
+                                .put("name", mostLikelyLanguage.name)
+                                .put("confidence", 1.0 - secondMostLikelyConfidence)
                         )
                     }
                 }
